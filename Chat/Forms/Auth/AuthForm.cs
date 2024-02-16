@@ -6,15 +6,15 @@ namespace Chat.Forms.Auth
     public partial class AuthForm : Form
     {
         private readonly UserService userService;
-        private State state;
+        private readonly LogService logService;
 
-        public AuthForm(UserService userService)
+        public AuthForm(UserService userService, LogService logService)
         {
             InitializeComponent();
 
             dtBirthdate.MaxDate = DateTime.Now;
             this.userService = userService;
-            state = State.GetInstance();
+            this.logService = logService;
             panelRegister.Visible = false;
             panelLogin.Visible = true;
             Text = "Вхід";
@@ -22,46 +22,64 @@ namespace Chat.Forms.Auth
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            var model = new RegisterVM
+            try
             {
-                Email = tbEmail.Text,
-                UserName = tbLogin.Text,
-                Password = tbPassword.Text,
-                ConfirmPassword = tbConfirmPassword.Text,
-                Birthday = dtBirthdate.Value,
-                FirstName = tbName.Text,
-                LastName = tbSurname.Text
-            };
+                var model = new RegisterVM
+                {
+                    Email = tbEmail.Text,
+                    UserName = tbLogin.Text,
+                    Password = tbPassword.Text,
+                    ConfirmPassword = tbConfirmPassword.Text,
+                    Birthday = dtBirthdate.Value,
+                    FirstName = tbName.Text,
+                    LastName = tbSurname.Text
+                };
 
-            var res = userService.Register(model);
+                var res = userService.Register(model);
 
-            if(!res.IsSuccess)
-            {
-                MessageBox.Show(res.Message, "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!res.IsSuccess)
+                {
+                    logService.AddLog($"{model.Email}: {res.Message}", Enum.GetName(LogTypes.RegisterError));
+                    MessageBox.Show(res.Message, "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    logService.AddLog($"Email: {model.Email}, Username: {model.UserName} registered", Enum.GetName(LogTypes.RegisterSuccess));
+                    Close();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Close();
+                logService.AddLog($"{ex.Message}", Enum.GetName(LogTypes.Exception));
             }
         }
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            LoginVM model = new LoginVM
+            try
             {
-                Login = tbLoginEmail.Text,
-                Password = tbLoginPassword.Text
-            };
+                LoginVM model = new LoginVM
+                {
+                    Login = tbLoginEmail.Text,
+                    Password = tbLoginPassword.Text
+                };
 
-            var res = userService.Login(model);
+                var res = userService.Login(model);
 
-            if(!res.IsSuccess)
-            {
-                MessageBox.Show(res.Message, "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if (!res.IsSuccess)
+                {
+                    logService.AddLog($"{model.Login}: {res.Message}", Enum.GetName(LogTypes.LoginError));
+                    MessageBox.Show(res.Message, "Помилка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    logService.AddLog($"{model.Login} logined", Enum.GetName(LogTypes.LoginSuccess));
+                    Close();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                Close();
+                logService.AddLog($"{ex.Message}", Enum.GetName(LogTypes.Exception));
             }
         }
 

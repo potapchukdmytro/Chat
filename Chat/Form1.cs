@@ -1,17 +1,13 @@
 using AutoMapper;
-using Chat.AutomapperProfles;
+using Chat.Configuration;
 using Chat.Constants;
-using Chat.Entites;
 using Chat.Forms.Auth;
 using Chat.Forms.Chat;
 using Chat.Forms.Profile;
-using Chat.Repositories;
 using Chat.Services;
 using Chat.ViewModels.Chat;
 using Chat.ViewModels.Message;
 using Chat.ViewModels.User;
-using System;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace Chat
@@ -20,31 +16,20 @@ namespace Chat
     {
         private readonly UserService userService;
         private readonly ChatService chatService;
+        private readonly LogService logService;
         private readonly IMapper mapper;
 
-        public MainForm()
+        public MainForm(Config config)
         {
             InitializeComponent();
 
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             MaximizeBox = false;
 
-            AppDbContext context = new AppDbContext();
-            GenericRepository<Guid, UserEntity> userRepository = new GenericRepository<Guid, UserEntity>(context);
-            GenericRepository<Guid, ChatEntity> chatRepository = new GenericRepository<Guid, ChatEntity>(context);
-            GenericRepository<Guid, MessageEntity> messageRepository = new GenericRepository<Guid, MessageEntity>(context);
-            UserChatRepository userChatRepository = new UserChatRepository(context);
-
-            var mapperConfig = new MapperConfiguration(cfg =>
-            {
-                cfg.AddProfile<AutomapperUserProfile>();
-                cfg.AddProfile<AutomapperChatProfile>();
-                cfg.AddProfile<AutomapperMessageProfile>();
-            });
-            mapper = new Mapper(mapperConfig);
-
-            userService = new UserService(userRepository, mapper);
-            chatService = new ChatService(chatRepository, mapper, userService, userChatRepository, messageRepository);
+            userService = config.userService;
+            chatService = config.chatService;
+            logService = config.logService;
+            mapper = config.mapper;
         }
 
         private void btnProfile_Click(object sender, EventArgs e)
@@ -72,9 +57,17 @@ namespace Chat
 
             LoadChats();
 
-            messagesBox.Clear();
-            messagesBox.SelectionAlignment = HorizontalAlignment.Center;
-            messagesBox.AppendText("¬ибер≥ть чат");
+
+            if (chatList.Items.Count > 0)
+            {
+                chatList.SelectedIndex = 0;
+            }
+            else
+            {
+                messagesBox.Clear();
+                messagesBox.SelectionAlignment = HorizontalAlignment.Center;
+                messagesBox.AppendText("¬ибер≥ть або створ≥ть чат");
+            }
         }
 
         private void Logout(object sender, EventArgs e)
@@ -136,7 +129,7 @@ namespace Chat
         private void LoadChats()
         {
             chatList.Items.Clear();
-            var chats = chatService.GetAll().ToArray();
+            var chats = chatService.GetAll(userService.CurrentUser.Id).ToArray();
             chatList.Items.AddRange(chats);
             chatList.SelectedIndexChanged += ChatListClick;
         }
@@ -190,7 +183,7 @@ namespace Chat
 
         private void AuthForm()
         {
-            AuthForm authForm = new AuthForm(userService);
+            AuthForm authForm = new AuthForm(userService, logService);
             authForm.ShowDialog();
 
             if (userService.CurrentUser == null)
@@ -214,25 +207,29 @@ namespace Chat
 
         private void btnJoin_Click(object sender, EventArgs e)
         {
-            if (chatList.SelectedItem != null)
-            {
-                var chat = (ChatVM)((chatList).SelectedItem);
+            ChatList chatList = new ChatList(userService, chatService);
+            chatList.ShowDialog();
+            LoadChats();
 
-                var res = chatService.AddUser(chat.Id, userService.CurrentUser.Id);
+            //if (chatList.SelectedItem != null)
+            //{
+            //    var chat = (ChatVM)((chatList).SelectedItem);
 
-                if (!res.IsSuccess)
-                {
-                    MessageBox.Show(res.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    ChatListClick(chatList, e);
-                }
-            }
-            else
-            {
-                MessageBox.Show("—початку вибер≥ть чат", "„ат", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
+            //    var res = chatService.AddUser(chat.Id, userService.CurrentUser.Id);
+
+            //    if (!res.IsSuccess)
+            //    {
+            //        MessageBox.Show(res.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //    else
+            //    {
+            //        ChatListClick(chatList, e);
+            //    }
+            //}
+            //else
+            //{
+            //    MessageBox.Show("—початку вибер≥ть чат", "„ат", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //}
         }
 
         private void btnSendMeesage_Click(object sender, EventArgs e)
@@ -267,7 +264,7 @@ namespace Chat
 
         private void tbMessage_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
                 btnSendMeesage_Click(sender, e);
             }

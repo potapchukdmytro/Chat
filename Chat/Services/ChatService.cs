@@ -107,6 +107,32 @@ namespace Chat.Services
             return chats;
         }
 
+        public List<ChatVM> GetAll(Guid userId)
+        {
+            var chatsEntity = chatRepository
+                .GetAll()
+                .Include(c => c.UserChats)
+                .Where(c => c.UserChats.Count(uc => uc.UserId == userId) > 0)
+                .ToList();
+
+            var chats = mapper.Map<List<ChatVM>>(chatsEntity);
+
+            return chats;
+        }
+
+        public List<ChatVM> GetJoinChatList(Guid userId)
+        {
+            var chatsEntity = chatRepository
+                .GetAll()
+                .Include(c => c.UserChats)
+                .Where(c => c.UserChats.All(uc => uc.UserId != userId))
+                .ToList();
+
+            var chats = mapper.Map<List<ChatVM>>(chatsEntity);
+
+            return chats;
+        }
+
         public ChatEntity GetById(Guid id)
         {
             var entitiy = chatRepository

@@ -1,3 +1,4 @@
+using Chat.Configuration;
 using Chat.Forms.Auth;
 
 namespace Chat
@@ -13,7 +14,8 @@ namespace Chat
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainForm());
+            Config config= new Config();
+            Application.Run(new MainForm(config));
         }
     }
 }
