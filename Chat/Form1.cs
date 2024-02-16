@@ -170,7 +170,7 @@ namespace Chat
             foreach (var message in messages)
             {
                 messagesBox.DeselectAll();
-                if(message.UserName == userService.CurrentUser.UserName)
+                if (message.UserName == userService.CurrentUser.UserName)
                 {
                     messagesBox.SelectionAlignment = HorizontalAlignment.Right;
                     messagesBox.SelectionFont = new Font(messagesBox.SelectionFont.FontFamily, 9.0f, FontStyle.Bold);
@@ -237,7 +237,7 @@ namespace Chat
 
         private void btnSendMeesage_Click(object sender, EventArgs e)
         {
-            if(chatList.SelectedItem == null)
+            if (chatList.SelectedItem == null)
             {
                 tbMessage.Text = string.Empty;
                 return;
@@ -263,6 +263,14 @@ namespace Chat
             chatService.AddMessage(model);
             tbMessage.Text = string.Empty;
             UpdateMessagesList(chat.Id);
+        }
+
+        private void tbMessage_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Enter)
+            {
+                btnSendMeesage_Click(sender, e);
+            }
         }
     }
 }

@@ -87,6 +87,7 @@
             tbMessage.Name = "tbMessage";
             tbMessage.Size = new Size(438, 43);
             tbMessage.TabIndex = 3;
+            tbMessage.KeyDown += tbMessage_KeyDown;
             // 
             // messagesBox
             // 
@@ -170,18 +171,18 @@
             cmMessage.ImageScalingSize = new Size(20, 20);
             cmMessage.Items.AddRange(new ToolStripItem[] { editToolStripMenuItem, deleteToolStripMenuItem });
             cmMessage.Name = "cmMessage";
-            cmMessage.Size = new Size(211, 80);
+            cmMessage.Size = new Size(123, 52);
             // 
             // editToolStripMenuItem
             // 
             editToolStripMenuItem.Name = "editToolStripMenuItem";
-            editToolStripMenuItem.Size = new Size(210, 24);
+            editToolStripMenuItem.Size = new Size(122, 24);
             editToolStripMenuItem.Text = "Edit";
             // 
             // deleteToolStripMenuItem
             // 
             deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            deleteToolStripMenuItem.Size = new Size(210, 24);
+            deleteToolStripMenuItem.Size = new Size(122, 24);
             deleteToolStripMenuItem.Text = "Delete";
             // 
             // MainForm
