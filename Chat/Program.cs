@@ -14,7 +14,8 @@ namespace Chat
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Config config= new Config();
+            Config config = new Config();
+            Seeder.Seed(config.appDbContext);
             Application.Run(new MainForm(config));
         }
     }

@@ -10,6 +10,7 @@ namespace Chat
         public DbSet<ChatEntity> Chats { get; set; }
         public DbSet<UserChatEntity> UserChats { get; set; }
         public DbSet<MessageEntity> Messages { get; set; }
+        public DbSet<RoleEntity> Roles { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -48,6 +49,10 @@ namespace Chat
             builder.Entity<UserEntity>()
                 .Property(e => e.Birthday)
                 .IsRequired();
+            builder.Entity<UserEntity>()
+                .HasOne(u => u.Role)
+                .WithMany(r => r.Users)
+                .HasForeignKey(u => u.RoleId);
 
             // UserChat
             builder.Entity<UserChatEntity>()

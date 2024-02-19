@@ -32,7 +32,8 @@ namespace Chat.Forms.Auth
                     ConfirmPassword = tbConfirmPassword.Text,
                     Birthday = dtBirthdate.Value,
                     FirstName = tbName.Text,
-                    LastName = tbSurname.Text
+                    LastName = tbSurname.Text,
+                    Role = "User"
                 };
 
                 var res = userService.Register(model);

@@ -29,7 +29,7 @@ namespace Chat.Forms.Chat
 
         private void ChatList_Load(object sender, EventArgs e)
         {
-            var chats = chatService.GetJoinChatList(userService.CurrentUser.Id);
+            var chats = chatService.GetJoinChatList();
             if (chats.Count > 0)
             {
                 lbChatList.Items.AddRange(chats.ToArray());

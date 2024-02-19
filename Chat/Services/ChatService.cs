@@ -26,6 +26,22 @@ namespace Chat.Services
             this.messageRepository = messageRepository;
         }
 
+        public void Quit(Guid chatId, Guid userId)
+        {
+            var entity = userChatRepository.GetByIds(userId, chatId);
+            userChatRepository.Delete(entity);
+
+            if (ChatIsEmpty(chatId))
+            {
+                chatRepository.Delete(chatId);
+            }
+        }
+
+        public bool ChatIsEmpty(Guid chatId)
+        {
+            return !userChatRepository.GetAll().Any(uc => uc.ChatId == chatId);
+        }
+
         public List<UserListVM> GetUsers(Guid chatId)
         {
             var chat = GetById(chatId);
@@ -120,7 +136,7 @@ namespace Chat.Services
             return chats;
         }
 
-        public List<ChatVM> GetJoinChatList(Guid userId)
+        public List<ChatVM> GetChatListByUser(Guid userId)
         {
             var chatsEntity = chatRepository
                 .GetAll()
@@ -131,6 +147,27 @@ namespace Chat.Services
             var chats = mapper.Map<List<ChatVM>>(chatsEntity);
 
             return chats;
+        }
+
+        public List<ChatVM> GetJoinChatList()
+        {
+            bool isAdmin = userService.CurrentUser.Role.NormalizedName == "ADMIN";
+            Guid userId = userService.CurrentUser.Id;
+
+            var chatsEntity = chatRepository
+                            .GetAll()
+                            .Include(c => c.UserChats)
+                            .Where(c => c.UserChats.All(uc => uc.UserId != userId))
+                            .ToList();
+
+            if (isAdmin)
+            {
+                return mapper.Map<List<ChatVM>>(chatsEntity);
+            }
+            else
+            {
+                return mapper.Map<List<ChatVM>>(chatsEntity.Where(c => c.IsPublic));
+            }
         }
 
         public ChatEntity GetById(Guid id)
@@ -190,6 +227,8 @@ namespace Chat.Services
                 var entity = new ChatEntity
                 {
                     Title = model.Title,
+                    IsPublic = model.IsPublic,
+                    Owner = userService.CurrentUser.Id,
                     Id = Guid.NewGuid()
                 };
 

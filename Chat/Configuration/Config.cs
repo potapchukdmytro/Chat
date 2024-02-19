@@ -13,15 +13,17 @@ namespace Chat.Configuration
         public LogService logService;
         public IMapper mapper;
         public MapperConfiguration mapperConfig;
+        public AppDbContext appDbContext;
 
         public Config() 
         {
-            AppDbContext context = new AppDbContext();
-            GenericRepository<Guid, UserEntity> userRepository = new GenericRepository<Guid, UserEntity>(context);
-            GenericRepository<Guid, ChatEntity> chatRepository = new GenericRepository<Guid, ChatEntity>(context);
-            GenericRepository<Guid, MessageEntity> messageRepository = new GenericRepository<Guid, MessageEntity>(context);
-            GenericRepository<Guid, LogEntity> logRepository = new GenericRepository<Guid, LogEntity>(context);
-            UserChatRepository userChatRepository = new UserChatRepository(context);
+            appDbContext = new AppDbContext();
+            GenericRepository<Guid, UserEntity> userRepository = new GenericRepository<Guid, UserEntity>(appDbContext);
+            GenericRepository<Guid, ChatEntity> chatRepository = new GenericRepository<Guid, ChatEntity>(appDbContext);
+            GenericRepository<Guid, MessageEntity> messageRepository = new GenericRepository<Guid, MessageEntity>(appDbContext);
+            GenericRepository<Guid, LogEntity> logRepository = new GenericRepository<Guid, LogEntity>(appDbContext);
+            GenericRepository<Guid, RoleEntity> roleRepository = new GenericRepository<Guid, RoleEntity>(appDbContext);
+            UserChatRepository userChatRepository = new UserChatRepository(appDbContext);
 
             mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -32,7 +34,7 @@ namespace Chat.Configuration
 
             mapper = new Mapper(mapperConfig);
 
-            userService = new UserService(userRepository, mapper);
+            userService = new UserService(userRepository, mapper, roleRepository);
             chatService = new ChatService(chatRepository, mapper, userService, userChatRepository, messageRepository);
             logService = new LogService(logRepository);
         }

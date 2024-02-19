@@ -12,13 +12,15 @@ namespace Chat.Services
     public class UserService
     {
         private readonly GenericRepository<Guid, UserEntity> userRepository;
+        private readonly GenericRepository<Guid, RoleEntity> roleRepository;
         private readonly IMapper mapper;
         public UserEntity CurrentUser { get; set; } = null;
 
-        public UserService(GenericRepository<Guid, UserEntity> userRepository, IMapper mapper)
+        public UserService(GenericRepository<Guid, UserEntity> userRepository, IMapper mapper, GenericRepository<Guid, RoleEntity> roleRepository)
         {
             this.userRepository = userRepository;
             this.mapper = mapper;
+            this.roleRepository = roleRepository;
         }
 
         public UserEntity? GetById(Guid id)
@@ -26,6 +28,7 @@ namespace Chat.Services
             var user = userRepository
                 .GetAll()
                 .Include(u => u.Messages)
+                .Include(u => u.Role)
                 .Include(u => u.UserChats)
                 .ThenInclude(uc => uc.Chat)
                 .FirstOrDefault(u => u.Id == id);
@@ -55,6 +58,7 @@ namespace Chat.Services
             var users = userRepository
                 .GetAll()
                 .Include(u => u.Messages)
+                .Include(u => u.Role)
                 .Include(u => u.UserChats)
                 .ThenInclude(uc => uc.Chat)
                 .ToList();
@@ -134,6 +138,19 @@ namespace Chat.Services
 
             var entity = mapper.Map<UserEntity>(model);
 
+            var roleEntity = roleRepository
+                .GetAll()
+                .FirstOrDefault(r => r.NormalizedName == entity.Role.NormalizedName);
+
+            if(roleEntity == null)
+            {
+                return new Response
+                {
+                    IsSuccess = false,
+                    Message = "Роль не існує"
+                };
+            }
+
             if(HasUser(entity))
             {
                 return new Response
@@ -142,6 +159,9 @@ namespace Chat.Services
                     Message = "Користувач з таким іменем вже існує"
                 };
             }
+
+            entity.Role = null;
+            entity.RoleId = roleEntity.Id;
 
             Create(entity);
 

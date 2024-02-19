@@ -9,6 +9,8 @@
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Image { get; set; } = null;
+        public Guid RoleId { get; set; }  
+        public RoleEntity? Role { get; set; }
         public virtual List<UserChatEntity> UserChats { get; set; } = new();
         public virtual List<MessageEntity> Messages { get; set; } = new();
     }

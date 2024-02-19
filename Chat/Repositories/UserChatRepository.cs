@@ -1,4 +1,5 @@
 ﻿using Chat.Entites;
+using Microsoft.EntityFrameworkCore;
 
 namespace Chat.Repositories
 {
@@ -22,6 +23,17 @@ namespace Chat.Repositories
         {
             var res = context.UserChats.FirstOrDefault(uc => uc.UserId == userId && uc.ChatId == chatId);
             return res;
+        }
+
+        public void Delete(UserChatEntity entity)
+        {
+            context.UserChats.Remove(entity);
+            context.SaveChanges();
+        }
+
+        public IQueryable<UserChatEntity> GetAll()
+        {
+            return context.UserChats.AsNoTracking();
         }
     }
 }

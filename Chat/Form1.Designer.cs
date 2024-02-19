@@ -44,7 +44,10 @@
             cmMessage = new ContextMenuStrip(components);
             editToolStripMenuItem = new ToolStripMenuItem();
             deleteToolStripMenuItem = new ToolStripMenuItem();
+            cmChatList = new ContextMenuStrip(components);
+            QuitToolStripMenuItem = new ToolStripMenuItem();
             cmMessage.SuspendLayout();
+            cmChatList.SuspendLayout();
             SuspendLayout();
             // 
             // btnProfile
@@ -185,6 +188,20 @@
             deleteToolStripMenuItem.Size = new Size(122, 24);
             deleteToolStripMenuItem.Text = "Delete";
             // 
+            // cmChatList
+            // 
+            cmChatList.ImageScalingSize = new Size(20, 20);
+            cmChatList.Items.AddRange(new ToolStripItem[] { QuitToolStripMenuItem });
+            cmChatList.Name = "cmChatList";
+            cmChatList.Size = new Size(211, 56);
+            // 
+            // QuitToolStripMenuItem
+            // 
+            QuitToolStripMenuItem.Name = "QuitToolStripMenuItem";
+            QuitToolStripMenuItem.Size = new Size(210, 24);
+            QuitToolStripMenuItem.Text = "Вийти";
+            QuitToolStripMenuItem.Click += QuitToolStripMenuItem_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
@@ -207,6 +224,7 @@
             Text = "Chat";
             Load += Form1_Load;
             cmMessage.ResumeLayout(false);
+            cmChatList.ResumeLayout(false);
             ResumeLayout(false);
             PerformLayout();
         }
@@ -227,5 +245,7 @@
         private ContextMenuStrip cmMessage;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem deleteToolStripMenuItem;
+        private ContextMenuStrip cmChatList;
+        private ToolStripMenuItem QuitToolStripMenuItem;
     }
 }

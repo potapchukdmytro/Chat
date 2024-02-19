@@ -15,6 +15,7 @@ namespace Chat.Forms.Chat
         private void btnOk_Click(object sender, EventArgs e)
         {
             model.Title = textBox1.Text;
+            model.IsPublic = cbPublic.Checked;
             Close();
         }
 

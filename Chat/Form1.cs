@@ -47,12 +47,20 @@ namespace Chat
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            chatList.SelectedIndexChanged += ChatListClick;
+            chatList.ContextMenuStrip = cmChatList;
+
             LoadUser();
             messagesBox.ContextMenuStrip = cmMessage;
 
             if (userService.CurrentUser == null)
             {
                 AuthForm();
+            }
+
+            if (userService.CurrentUser == null)
+            {
+                Close();
             }
 
             LoadChats();
@@ -73,6 +81,7 @@ namespace Chat
         private void Logout(object sender, EventArgs e)
         {
             File.Delete(PathFiles.UserFile);
+            userService.CurrentUser = null;
             Hide();
             AuthForm();
             Show();
@@ -130,8 +139,11 @@ namespace Chat
         {
             chatList.Items.Clear();
             var chats = chatService.GetAll(userService.CurrentUser.Id).ToArray();
-            chatList.Items.AddRange(chats);
-            chatList.SelectedIndexChanged += ChatListClick;
+            if (chats.Count() > 0)
+            {
+                chatList.Items.AddRange(chats);
+                chatList.SelectedIndex = 0;
+            }
         }
 
         private void ChatListClick(object? sender, EventArgs e)
@@ -141,7 +153,9 @@ namespace Chat
             if (chat != null)
             {
                 userList.Items.Clear();
-                userList.Items.AddRange(chatService.GetUsers(chat.Id).ToArray());
+                var users = chatService.GetUsers(chat.Id).ToArray();
+                users.FirstOrDefault(u => u.Id == chat.Owner).Username += "\tвласник";
+                userList.Items.AddRange(users);
                 UpdateMessagesList(chat.Id);
             }
         }
@@ -210,26 +224,6 @@ namespace Chat
             ChatList chatList = new ChatList(userService, chatService);
             chatList.ShowDialog();
             LoadChats();
-
-            //if (chatList.SelectedItem != null)
-            //{
-            //    var chat = (ChatVM)((chatList).SelectedItem);
-
-            //    var res = chatService.AddUser(chat.Id, userService.CurrentUser.Id);
-
-            //    if (!res.IsSuccess)
-            //    {
-            //        MessageBox.Show(res.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //    else
-            //    {
-            //        ChatListClick(chatList, e);
-            //    }
-            //}
-            //else
-            //{
-            //    MessageBox.Show("Спочатку виберіть чат", "Чат", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //}
         }
 
         private void btnSendMeesage_Click(object sender, EventArgs e)
@@ -267,6 +261,17 @@ namespace Chat
             if (e.KeyCode == Keys.Enter)
             {
                 btnSendMeesage_Click(sender, e);
+            }
+        }
+
+        private void QuitToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var chat = (ChatVM)chatList.SelectedItem;
+
+            if(chat != null)
+            {
+                chatService.Quit(chat.Id, userService.CurrentUser.Id);
+                LoadChats();
             }
         }
     }

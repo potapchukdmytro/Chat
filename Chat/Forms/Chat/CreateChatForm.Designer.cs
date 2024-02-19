@@ -32,12 +32,13 @@
             label1 = new Label();
             btnOk = new Button();
             btnCancel = new Button();
+            cbPublic = new CheckBox();
             SuspendLayout();
             // 
             // textBox1
             // 
             textBox1.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point);
-            textBox1.Location = new Point(71, 56);
+            textBox1.Location = new Point(71, 43);
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(237, 38);
             textBox1.TabIndex = 0;
@@ -46,7 +47,7 @@
             // 
             label1.AutoSize = true;
             label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
-            label1.Location = new Point(128, 22);
+            label1.Location = new Point(129, 9);
             label1.Name = "label1";
             label1.Size = new Size(134, 31);
             label1.TabIndex = 1;
@@ -54,7 +55,7 @@
             // 
             // btnOk
             // 
-            btnOk.Location = new Point(71, 100);
+            btnOk.Location = new Point(71, 116);
             btnOk.Name = "btnOk";
             btnOk.Size = new Size(121, 29);
             btnOk.TabIndex = 2;
@@ -64,7 +65,7 @@
             // 
             // btnCancel
             // 
-            btnCancel.Location = new Point(198, 100);
+            btnCancel.Location = new Point(198, 116);
             btnCancel.Name = "btnCancel";
             btnCancel.Size = new Size(110, 29);
             btnCancel.TabIndex = 3;
@@ -72,11 +73,22 @@
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
+            // cbPublic
+            // 
+            cbPublic.AutoSize = true;
+            cbPublic.Location = new Point(71, 86);
+            cbPublic.Name = "cbPublic";
+            cbPublic.Size = new Size(131, 24);
+            cbPublic.TabIndex = 4;
+            cbPublic.Text = "Публічний чат";
+            cbPublic.UseVisualStyleBackColor = true;
+            // 
             // CreateChatForm
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(402, 157);
+            Controls.Add(cbPublic);
             Controls.Add(btnCancel);
             Controls.Add(btnOk);
             Controls.Add(label1);
@@ -93,5 +105,6 @@
         private Label label1;
         private Button btnOk;
         private Button btnCancel;
+        private CheckBox cbPublic;
     }
 }
