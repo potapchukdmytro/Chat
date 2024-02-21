@@ -27,6 +27,7 @@ namespace Chat.Repositories
         {
             if(context.Entry(entity).State == EntityState.Detached)
             {
+                context.Set<TEntity>().Attach(entity);
                 context.Entry(entity).State = EntityState.Modified;
             }
             context.Update(entity);

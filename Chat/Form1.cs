@@ -38,7 +38,14 @@ namespace Chat
             ProfileForm profileForm = new ProfileForm(userService, profileModel);
             profileForm.StartPosition = FormStartPosition.CenterScreen;
             profileForm.ShowDialog();
-            btnProfile.BackgroundImage = userService.UserImage;
+            if(userService.UserImage == null)
+            {
+                btnProfile.BackgroundImage = new Bitmap(Path.Combine(PathFiles.Images, "defaultAvatar.jpg"));
+            }
+            else
+            {
+                btnProfile.BackgroundImage = userService.UserImage;
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -246,8 +253,12 @@ namespace Chat
         {
             File.Delete(PathFiles.UserFile);
             userService.CurrentUser = null;
-            userService.UserImage.Dispose();
-            userService.UserImage = null;
+            if(userService.UserImage != null)
+            {
+                userService.UserImage.Dispose();
+                userService.UserImage = null;
+            }
+            
             Hide();
             AuthForm();
             Show();

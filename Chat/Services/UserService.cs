@@ -208,8 +208,6 @@ namespace Chat.Services
             newEntity.Messages = CurrentUser.Messages;
             newEntity.RoleId = CurrentUser.RoleId;
 
-            CurrentUser = newEntity;
-
             Update(CurrentUser);
 
             return new Response
