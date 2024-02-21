@@ -35,28 +35,32 @@
             label1 = new Label();
             tbMessage = new TextBox();
             messagesBox = new RichTextBox();
-            btnCreateChat = new Button();
             userList = new ListBox();
             label2 = new Label();
-            btnJoin = new Button();
-            btnLogout = new Button();
             btnSendMeesage = new Button();
             cmMessage = new ContextMenuStrip(components);
             editToolStripMenuItem = new ToolStripMenuItem();
             deleteToolStripMenuItem = new ToolStripMenuItem();
             cmChatList = new ContextMenuStrip(components);
             QuitToolStripMenuItem = new ToolStripMenuItem();
+            menuStrip1 = new MenuStrip();
+            чатToolStripMenuItem = new ToolStripMenuItem();
+            miCreateChat = new ToolStripMenuItem();
+            miJoinChat = new ToolStripMenuItem();
+            miQuit = new ToolStripMenuItem();
             cmMessage.SuspendLayout();
             cmChatList.SuspendLayout();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // btnProfile
             // 
-            btnProfile.Location = new Point(519, 18);
+            btnProfile.BackgroundImage = (Image)resources.GetObject("btnProfile.BackgroundImage");
+            btnProfile.BackgroundImageLayout = ImageLayout.Stretch;
+            btnProfile.Location = new Point(719, 42);
             btnProfile.Name = "btnProfile";
-            btnProfile.Size = new Size(94, 29);
+            btnProfile.Size = new Size(207, 160);
             btnProfile.TabIndex = 0;
-            btnProfile.Text = "Профіль";
             btnProfile.UseVisualStyleBackColor = true;
             btnProfile.Click += btnProfile_Click;
             // 
@@ -67,19 +71,19 @@
             chatList.ForeColor = SystemColors.InactiveCaptionText;
             chatList.FormattingEnabled = true;
             chatList.ItemHeight = 20;
-            chatList.Location = new Point(12, 53);
+            chatList.Location = new Point(12, 73);
             chatList.Name = "chatList";
-            chatList.Size = new Size(208, 344);
+            chatList.Size = new Size(208, 404);
             chatList.TabIndex = 1;
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            label1.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             label1.ForeColor = SystemColors.ButtonFace;
-            label1.Location = new Point(12, 9);
+            label1.Location = new Point(12, 41);
             label1.Name = "label1";
-            label1.Size = new Size(156, 31);
+            label1.Size = new Size(124, 25);
             label1.TabIndex = 2;
             label1.Text = "Список чатів";
             // 
@@ -94,24 +98,12 @@
             // 
             // messagesBox
             // 
-            messagesBox.Location = new Point(226, 53);
+            messagesBox.Location = new Point(226, 42);
             messagesBox.Name = "messagesBox";
             messagesBox.ScrollBars = RichTextBoxScrollBars.Vertical;
-            messagesBox.Size = new Size(487, 374);
+            messagesBox.Size = new Size(487, 385);
             messagesBox.TabIndex = 4;
             messagesBox.Text = "";
-            // 
-            // btnCreateChat
-            // 
-            btnCreateChat.BackColor = Color.LightCoral;
-            btnCreateChat.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btnCreateChat.Location = new Point(12, 403);
-            btnCreateChat.Name = "btnCreateChat";
-            btnCreateChat.Size = new Size(208, 34);
-            btnCreateChat.TabIndex = 5;
-            btnCreateChat.Text = "Створити чат";
-            btnCreateChat.UseVisualStyleBackColor = false;
-            btnCreateChat.Click += btnCreateChat_Click;
             // 
             // userList
             // 
@@ -120,43 +112,21 @@
             userList.ForeColor = SystemColors.InactiveCaptionText;
             userList.FormattingEnabled = true;
             userList.ItemHeight = 20;
-            userList.Location = new Point(719, 53);
+            userList.Location = new Point(719, 233);
             userList.Name = "userList";
-            userList.Size = new Size(208, 424);
+            userList.Size = new Size(208, 244);
             userList.TabIndex = 6;
             // 
             // label2
             // 
             label2.AutoSize = true;
-            label2.Font = new Font("Segoe UI", 13.8F, FontStyle.Bold, GraphicsUnit.Point);
+            label2.Font = new Font("Segoe UI", 10.8F, FontStyle.Bold, GraphicsUnit.Point);
             label2.ForeColor = SystemColors.ButtonFace;
-            label2.Location = new Point(719, 9);
+            label2.Location = new Point(719, 205);
             label2.Name = "label2";
-            label2.Size = new Size(150, 31);
+            label2.Size = new Size(120, 25);
             label2.TabIndex = 7;
             label2.Text = "Користувачі";
-            // 
-            // btnJoin
-            // 
-            btnJoin.BackColor = Color.LightCoral;
-            btnJoin.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point);
-            btnJoin.Location = new Point(12, 443);
-            btnJoin.Name = "btnJoin";
-            btnJoin.Size = new Size(208, 34);
-            btnJoin.TabIndex = 8;
-            btnJoin.Text = "Приєднатися";
-            btnJoin.UseVisualStyleBackColor = false;
-            btnJoin.Click += btnJoin_Click;
-            // 
-            // btnLogout
-            // 
-            btnLogout.Location = new Point(619, 18);
-            btnLogout.Name = "btnLogout";
-            btnLogout.Size = new Size(94, 29);
-            btnLogout.TabIndex = 9;
-            btnLogout.Text = "Вийти";
-            btnLogout.UseVisualStyleBackColor = true;
-            btnLogout.Click += Logout;
             // 
             // btnSendMeesage
             // 
@@ -193,14 +163,52 @@
             cmChatList.ImageScalingSize = new Size(20, 20);
             cmChatList.Items.AddRange(new ToolStripItem[] { QuitToolStripMenuItem });
             cmChatList.Name = "cmChatList";
-            cmChatList.Size = new Size(211, 56);
+            cmChatList.Size = new Size(121, 28);
             // 
             // QuitToolStripMenuItem
             // 
             QuitToolStripMenuItem.Name = "QuitToolStripMenuItem";
-            QuitToolStripMenuItem.Size = new Size(210, 24);
+            QuitToolStripMenuItem.Size = new Size(120, 24);
             QuitToolStripMenuItem.Text = "Вийти";
             QuitToolStripMenuItem.Click += QuitToolStripMenuItem_Click;
+            // 
+            // menuStrip1
+            // 
+            menuStrip1.ImageScalingSize = new Size(20, 20);
+            menuStrip1.Items.AddRange(new ToolStripItem[] { чатToolStripMenuItem, miQuit });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.Size = new Size(938, 28);
+            menuStrip1.TabIndex = 11;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // чатToolStripMenuItem
+            // 
+            чатToolStripMenuItem.DropDownItems.AddRange(new ToolStripItem[] { miCreateChat, miJoinChat });
+            чатToolStripMenuItem.Name = "чатToolStripMenuItem";
+            чатToolStripMenuItem.Size = new Size(47, 24);
+            чатToolStripMenuItem.Text = "Чат";
+            // 
+            // miCreateChat
+            // 
+            miCreateChat.Name = "miCreateChat";
+            miCreateChat.Size = new Size(183, 26);
+            miCreateChat.Text = "Створити чат";
+            miCreateChat.Click += miCreateChat_Click;
+            // 
+            // miJoinChat
+            // 
+            miJoinChat.Name = "miJoinChat";
+            miJoinChat.Size = new Size(183, 26);
+            miJoinChat.Text = "Приєднатися";
+            miJoinChat.Click += miJoinChat_Click;
+            // 
+            // miQuit
+            // 
+            miQuit.Name = "miQuit";
+            miQuit.Size = new Size(65, 24);
+            miQuit.Text = "Вийти";
+            miQuit.Click += miQuit_Click;
             // 
             // MainForm
             // 
@@ -208,23 +216,24 @@
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = SystemColors.ControlDarkDark;
             ClientSize = new Size(938, 482);
+            Controls.Add(menuStrip1);
             Controls.Add(btnSendMeesage);
-            Controls.Add(btnLogout);
-            Controls.Add(btnJoin);
             Controls.Add(label2);
             Controls.Add(userList);
-            Controls.Add(btnCreateChat);
             Controls.Add(messagesBox);
             Controls.Add(tbMessage);
             Controls.Add(label1);
             Controls.Add(chatList);
             Controls.Add(btnProfile);
+            MainMenuStrip = menuStrip1;
             Name = "MainForm";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Chat";
             Load += Form1_Load;
             cmMessage.ResumeLayout(false);
             cmChatList.ResumeLayout(false);
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -236,16 +245,18 @@
         private Label label1;
         private TextBox tbMessage;
         private RichTextBox messagesBox;
-        private Button btnCreateChat;
         private ListBox userList;
         private Label label2;
-        private Button btnJoin;
-        private Button btnLogout;
         private Button btnSendMeesage;
         private ContextMenuStrip cmMessage;
         private ToolStripMenuItem editToolStripMenuItem;
         private ToolStripMenuItem deleteToolStripMenuItem;
         private ContextMenuStrip cmChatList;
         private ToolStripMenuItem QuitToolStripMenuItem;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem чатToolStripMenuItem;
+        private ToolStripMenuItem miCreateChat;
+        private ToolStripMenuItem miJoinChat;
+        private ToolStripMenuItem miQuit;
     }
 }

@@ -1,4 +1,5 @@
-﻿using Chat.Services;
+﻿using Chat.Constants;
+using Chat.Services;
 using Chat.ViewModels.User;
 
 namespace Chat.Forms.Profile
@@ -21,10 +22,11 @@ namespace Chat.Forms.Profile
             lbEmail.Text = model.Email;
             lbName.Text = string.IsNullOrEmpty(model.FirstName) ? "Ім'я" : model.FirstName;
             lbSurname.Text = string.IsNullOrEmpty(model.LastName) ? "Прізвище" : model.LastName;
-            if (model.Image != null)
+
+            if(userService.UserImage != null)
             {
                 pictureBox1.BackgroundImage = null;
-                pictureBox1.Image = model.Image;
+                pictureBox1.Image = userService.UserImage;
             }
         }
 
@@ -42,23 +44,30 @@ namespace Chat.Forms.Profile
                 }
                 else
                 {
-                    pictureBox1.Image?.Dispose();
-                    model.Image?.Dispose();
-
-                    using (Stream stream = dialog.OpenFile())
-                    {
-                        Image image = new Bitmap(stream);
-                        pictureBox1.Image = image;
-                        image.Tag = $"{Guid.NewGuid()}{file.Extension}";
-                        pictureBox1.BackgroundImage = null;
-                        model.Image = image;
-                    }
+                    model.Image = file.Name;
+                    pictureBox1.Image = new Bitmap(file.FullName);
                 }
             }
         }
 
         private void btnSave_Click(object sender, EventArgs e)
         {
+            if(model.Image != userService.CurrentUser.Image)
+            {
+                if(userService.UserImage != null)
+                {
+                    userService.UserImage.Dispose();
+                    File.Delete(Path.Combine(PathFiles.Images, userService.CurrentUser.Image));
+                }
+                
+                string extension = model.Image.Substring(model.Image.LastIndexOf('.'));
+                string imageName = Guid.NewGuid().ToString() + extension;
+
+                pictureBox1.Image.Save(Path.Combine(PathFiles.Images, imageName));
+                userService.UserImage = new Bitmap(Path.Combine(PathFiles.Images, imageName));
+                model.Image = imageName;
+            }
+
             var res = userService.ProfileChange(model);
 
             if (!res.IsSuccess)

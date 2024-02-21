@@ -25,6 +25,10 @@ namespace Chat.Repositories
 
         public bool Update(TEntity entity)
         {
+            if(context.Entry(entity).State == EntityState.Detached)
+            {
+                context.Entry(entity).State = EntityState.Modified;
+            }
             context.Update(entity);
             var res = context.SaveChanges();
             context.Entry(entity).State = EntityState.Detached;

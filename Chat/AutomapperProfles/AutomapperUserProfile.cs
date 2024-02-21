@@ -11,16 +11,13 @@ namespace Chat.AutomapperProfles
         public AutomapperUserProfile() 
         {
             // UserEntity -> ProfileVM
-            CreateMap<UserEntity, ProfileVM>()
-                .ForMember(dest => dest.Image, opt => opt.Ignore());
+            CreateMap<UserEntity, ProfileVM>();
             // ProfileVM -> UserEntity
             CreateMap<ProfileVM, UserEntity>()
                 .ForMember(dest => dest.Messages, opt => opt.Ignore())
                 .ForMember(dest => dest.UserChats, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedDate, opt => opt.Ignore())
-                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore())
-                .ForMember(dest => dest.Image, opt => opt
-                    .MapFrom(src => src.Image == null ? null : src.Image.Tag.ToString()));
+                .ForMember(dest => dest.IsDeleted, opt => opt.Ignore());
             // RegisterVM -> UserEntity
             CreateMap<RegisterVM, UserEntity>()
                 .ForMember(dest => dest.Messages, opt => opt.Ignore())

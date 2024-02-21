@@ -35,14 +35,10 @@ namespace Chat
         private void btnProfile_Click(object sender, EventArgs e)
         {
             var profileModel = mapper.Map<ProfileVM>(userService.CurrentUser);
-            if (!string.IsNullOrEmpty(userService.CurrentUser.Image))
-            {
-                profileModel.Image = new Bitmap(Path.Combine(PathFiles.Images, userService.CurrentUser.Image));
-                profileModel.Image.Tag = userService.CurrentUser.Image;
-            }
             ProfileForm profileForm = new ProfileForm(userService, profileModel);
             profileForm.StartPosition = FormStartPosition.CenterScreen;
             profileForm.ShowDialog();
+            btnProfile.BackgroundImage = userService.UserImage;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -63,6 +59,11 @@ namespace Chat
                 Close();
             }
 
+            if (userService.UserImage != null)
+            {
+                btnProfile.BackgroundImage = userService.UserImage;
+            }
+
             LoadChats();
 
 
@@ -76,16 +77,6 @@ namespace Chat
                 messagesBox.SelectionAlignment = HorizontalAlignment.Center;
                 messagesBox.AppendText("¬ибер≥ть або створ≥ть чат");
             }
-        }
-
-        private void Logout(object sender, EventArgs e)
-        {
-            File.Delete(PathFiles.UserFile);
-            userService.CurrentUser = null;
-            Hide();
-            AuthForm();
-            Show();
-            Form1_Load(sender, e);
         }
 
         private void LoadUser()
@@ -105,33 +96,16 @@ namespace Chat
                     var model = (SaveUserVM)xmlSerializer.Deserialize(stream);
 
                     userService.CurrentUser = userService.GetById(model.Id);
+
+                    if(!string.IsNullOrEmpty(userService.CurrentUser.Image))
+                    {
+                        string imagePath = Path.Combine(PathFiles.Images, userService.CurrentUser.Image);
+                        userService.UserImage = new Bitmap(imagePath);
+                    }
                 }
             }
             catch (Exception)
             {
-            }
-        }
-
-        private void btnCreateChat_Click(object sender, EventArgs e)
-        {
-            var model = new CreateChatVM();
-
-            CreateChatForm form = new CreateChatForm(model);
-            form.ShowDialog();
-
-            if (model.Title != null)
-            {
-                model.UserId = userService.CurrentUser.Id;
-                var res = chatService.CreateChat(model);
-
-                if (!res.IsSuccess)
-                {
-                    MessageBox.Show(res.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    LoadChats();
-                }
             }
         }
 
@@ -219,13 +193,6 @@ namespace Chat
             }
         }
 
-        private void btnJoin_Click(object sender, EventArgs e)
-        {
-            ChatList chatList = new ChatList(userService, chatService);
-            chatList.ShowDialog();
-            LoadChats();
-        }
-
         private void btnSendMeesage_Click(object sender, EventArgs e)
         {
             if (chatList.SelectedItem == null)
@@ -268,11 +235,53 @@ namespace Chat
         {
             var chat = (ChatVM)chatList.SelectedItem;
 
-            if(chat != null)
+            if (chat != null)
             {
                 chatService.Quit(chat.Id, userService.CurrentUser.Id);
                 LoadChats();
             }
+        }
+
+        private void miQuit_Click(object sender, EventArgs e)
+        {
+            File.Delete(PathFiles.UserFile);
+            userService.CurrentUser = null;
+            userService.UserImage.Dispose();
+            userService.UserImage = null;
+            Hide();
+            AuthForm();
+            Show();
+            Form1_Load(sender, e);
+        }
+
+        private void miCreateChat_Click(object sender, EventArgs e)
+        {
+            var model = new CreateChatVM();
+
+            CreateChatForm form = new CreateChatForm(model);
+            form.ShowDialog();
+
+            if (model.Title != null)
+            {
+                model.UserId = userService.CurrentUser.Id;
+                var res = chatService.CreateChat(model);
+
+                if (!res.IsSuccess)
+                {
+                    MessageBox.Show(res.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    LoadChats();
+                }
+            }
+        }
+
+        private void miJoinChat_Click(object sender, EventArgs e)
+        {
+            ChatList chatList = new ChatList(userService, chatService);
+            chatList.ShowDialog();
+            LoadChats();
         }
     }
 }

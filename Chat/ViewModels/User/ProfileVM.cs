@@ -9,6 +9,6 @@
         public DateTime Birthday { get; set; }
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-        public Image? Image { get; set; }
+        public string? Image { get; set; }
     }
 }

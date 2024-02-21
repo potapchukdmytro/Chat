@@ -15,6 +15,7 @@ namespace Chat.Services
         private readonly GenericRepository<Guid, RoleEntity> roleRepository;
         private readonly IMapper mapper;
         public UserEntity CurrentUser { get; set; } = null;
+        public Image UserImage { get; set; } = null;
 
         public UserService(GenericRepository<Guid, UserEntity> userRepository, IMapper mapper, GenericRepository<Guid, RoleEntity> roleRepository)
         {
@@ -205,16 +206,7 @@ namespace Chat.Services
             newEntity.IsDeleted = CurrentUser.IsDeleted;
             newEntity.UserChats = CurrentUser.UserChats;
             newEntity.Messages = CurrentUser.Messages;
-
-            if (CurrentUser.Image != newEntity.Image)
-            {
-                if (!string.IsNullOrEmpty(CurrentUser.Image))
-                {
-                    File.Delete(Path.Combine(PathFiles.Images, CurrentUser.Image));
-                }
-
-                model.Image.Save(Path.Combine(PathFiles.Images, newEntity.Image));
-            }
+            newEntity.RoleId = CurrentUser.RoleId;
 
             CurrentUser = newEntity;
 
